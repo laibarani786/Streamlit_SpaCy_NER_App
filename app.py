@@ -3,6 +3,16 @@ import pandas as pd
 import spacy
 from spacy import displacy
 import uuid
+from spacy.cli import download  # <-- deploy-friendly
+
+# -------------------------------
+# Load SpaCy model (auto-download if missing)
+# -------------------------------
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    download("en_core_web_sm")   # <-- deploy-friendly download
+    nlp = spacy.load("en_core_web_sm")
 
 # -------------------------------
 # Initialize session state
@@ -11,15 +21,6 @@ if "history" not in st.session_state:
     st.session_state.history = []
 if "input_text" not in st.session_state:
     st.session_state.input_text = ""
-
-# -------------------------------
-# Load SpaCy model (cached for speed)
-# -------------------------------
-@st.cache_resource
-def load_model():
-    return spacy.load("en_core_web_sm")
-
-nlp = load_model()
 
 # -------------------------------
 # Page setup
@@ -141,5 +142,5 @@ with st.sidebar:
 st.markdown("---")
 st.caption(
     "💡 Tip: If displaCy visualization doesn't show colors, try resizing the window. "
-    "Make sure SpaCy model is installed using: `python -m spacy download en_core_web_sm`"
+    "SpaCy model will auto-download if not found."
 )
