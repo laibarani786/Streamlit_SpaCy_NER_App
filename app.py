@@ -4,7 +4,7 @@ import spacy
 from spacy import displacy
 import uuid
 import subprocess
-import sys  # <-- add this
+import sys  # <-- Cloud-safe Python executable
 
 # -------------------------------
 # Load SpaCy model (Cloud-safe)
@@ -141,11 +141,4 @@ with st.sidebar:
                 if cols[2].button("View displaCy", key=f"view-{item['id']}"):
                     st.components.v1.html(item["entities_html"], height=220, scrolling=True)
 
-# -------------------------------
-# Footer
-# -------------------------------
-st.markdown("---")
-st.caption(
-    "💡 Tip: If displaCy visualization doesn't show colors, try resizing the window. "
-    "SpaCy model will auto-download if not found."
-)
+# -----------------
