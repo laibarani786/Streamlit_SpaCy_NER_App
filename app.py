@@ -3,16 +3,20 @@ import pandas as pd
 import spacy
 from spacy import displacy
 import uuid
-from spacy.cli import download  # <-- deploy-friendly
 
 # -------------------------------
 # Load SpaCy model (auto-download if missing)
 # -------------------------------
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    download("en_core_web_sm")   # <-- deploy-friendly download
-    nlp = spacy.load("en_core_web_sm")
+@st.cache_resource
+def load_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        from spacy.cli import download
+        download("en_core_web_sm")
+        return spacy.load("en_core_web_sm")
+
+nlp = load_model()
 
 # -------------------------------
 # Initialize session state
@@ -106,7 +110,6 @@ else:
 with st.sidebar:
     st.subheader("History")
 
-    # Add New Chat + Clear Chat buttons
     if st.button("📝 New Chat"):
         st.session_state.input_text = ""
         st.rerun()
