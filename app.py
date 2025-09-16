@@ -3,6 +3,7 @@ import pandas as pd
 import spacy
 from spacy import displacy
 import uuid
+import subprocess
 
 # -------------------------------
 # Load SpaCy model (auto-download if missing)
@@ -12,8 +13,7 @@ def load_model():
     try:
         return spacy.load("en_core_web_sm")
     except OSError:
-        from spacy.cli import download
-        download("en_core_web_sm")
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
         return spacy.load("en_core_web_sm")
 
 nlp = load_model()
