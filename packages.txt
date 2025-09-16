@@ -1,1 +1,3 @@
-curl
+libffi-dev
+build-essential
+
