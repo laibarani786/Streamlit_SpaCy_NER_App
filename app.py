@@ -3,22 +3,6 @@ import pandas as pd
 import spacy
 from spacy import displacy
 import uuid
-import subprocess
-import sys  # <-- Cloud-safe Python executable
-
-# -------------------------------
-# Load SpaCy model (Cloud-safe)
-# -------------------------------
-@st.cache_resource
-def load_model():
-    try:
-        return spacy.load("en_core_web_sm")
-    except OSError:
-        # Use sys.executable to ensure correct Python interpreter on Streamlit Cloud
-        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-        return spacy.load("en_core_web_sm")
-
-nlp = load_model()
 
 # -------------------------------
 # Initialize session state
@@ -46,7 +30,8 @@ col1, col2 = st.columns([1,1])
 
 if col1.button("Analyze"):
     if input_text.strip():
-        doc = nlp(input_text)
+        # ❗ Note: nlp variable removed — model is not loaded now
+        doc = spacy.blank("en")(input_text)  # <-- just to avoid error when model removed
         entities = [(ent.text, ent.label_) for ent in doc.ents]
 
         df = pd.DataFrame(entities, columns=["entity", "label"]) if entities else pd.DataFrame(columns=["entity","label"])
@@ -140,5 +125,3 @@ with st.sidebar:
                     st.rerun()
                 if cols[2].button("View displaCy", key=f"view-{item['id']}"):
                     st.components.v1.html(item["entities_html"], height=220, scrolling=True)
-
-# -----------------
