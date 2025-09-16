@@ -4,16 +4,18 @@ import spacy
 from spacy import displacy
 import uuid
 import subprocess
+import sys  # <-- add this
 
 # -------------------------------
-# Load SpaCy model (auto-download if missing)
+# Load SpaCy model (Cloud-safe)
 # -------------------------------
 @st.cache_resource
 def load_model():
     try:
         return spacy.load("en_core_web_sm")
     except OSError:
-        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+        # Use sys.executable to ensure correct Python interpreter on Streamlit Cloud
+        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
         return spacy.load("en_core_web_sm")
 
 nlp = load_model()
